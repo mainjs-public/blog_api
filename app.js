@@ -5,12 +5,25 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const mongoose = require('mongoose');
 
-var blogsRouter = require('./routes/blogs');
+var indexRouter = require('./routes/index');
+
+const { dbUri } = require('./config/mongodb');
 
 var app = express();
+
+// Connect mongodb
+mongoose.connect(dbUri,  { useNewUrlParser: true });
+mongoose.connection
+	.once('open', () => console.log('connected'))
+	.on('error', (error) => console.log(error));
+
+// const blog = new Blog({ name: 'Blog name ....' });
+
+// blog.save((err, doc) => {
+// 	console.log(err, doc);
+// });
 
 app.use(cors());
 
@@ -24,10 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-app.use('/blogs', blogsRouter);
+app.use('/api/v1', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
