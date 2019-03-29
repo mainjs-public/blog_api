@@ -2,7 +2,15 @@ const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({ 
 	name: String,
-	slug: String,
+	slug: {
+		type: String,
+		index: true,
+		unique: true,
+	},
+	blogs: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Blog'
+	}]
 }, {
 	collection: 'categoris'
 });

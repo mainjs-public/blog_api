@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+const fs = require('fs');
 
 const mongoose = require('mongoose');
 
@@ -36,8 +37,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'build'), { index: false }));
 
 app.use('/api/v1', indexRouter);
+app.get('/*', function(req, res) {
+
+	fs.readFile(__dirname + '/build/index.html', 'utf8', function(err, html) {
+		if (err) {
+			res.json(err);
+		}
+		res.end(html);
+	});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
