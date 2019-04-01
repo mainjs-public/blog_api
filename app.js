@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 
+const Category = require('./models/categoryModel');
+
 const { dbUri } = require('./config/mongodb');
 
 var app = express();
@@ -46,7 +48,18 @@ app.get('/*', function(req, res) {
 		if (err) {
 			res.json(err);
 		}
-		res.end(html);
+
+		Category.find({ }, (err, categoris) => {
+
+			if (err) {
+				res.json(err);
+			}
+
+			html = html.replace('__MENU__', JSON.stringify(categoris));
+
+			res.end(html);
+
+		});
 	});
 });
 

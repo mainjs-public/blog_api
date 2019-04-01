@@ -2,24 +2,33 @@ const Blog = require('../models/blogModel');
 
 module.exports = {
 	getAllBlogs: (req, res, next) => {
-	  	Blog.find({}, (err, docs) => {
-	  		if (err) {
-	  			return next(err);
-	  		}
-	  		res.json(docs);
-	  	});
+		Blog.find({}, (err, docs) => {
+			if (err) {
+				return next(err);
+			}
+			res.json(docs);
+		});
 	},
 
 	addBlog: (req, res, next) => {
-		const { name, slug, content, description } = req.body;
+		const {
+			name,
+			slug,
+			content,
+			description,
+			category,
+			image,
+		} = req.body;
 		const blog = new Blog({
-		 name,
-		  slug,
-		   content,
-		    description,
-		     created: new Date(),
-		      updated: new Date()
-		       });
+			name,
+			slug,
+			content,
+			description,
+			category,
+			image,
+			created: new Date(),
+			updated: new Date()
+		});
 
 		blog.save((err, doc) => {
 			if (err) {
@@ -34,8 +43,7 @@ module.exports = {
 	},
 
 	updateBlog: (req, res, next) => {
-		const { name } = req.body;
-		req.doc.update({ name }, (err, raw) => {
+		req.doc.update(req.body, (err, raw) => {
 			if (err) {
 				return next(err);
 			}
@@ -53,7 +61,9 @@ module.exports = {
 	},
 
 	getBlogById: (req, res, next, id) => {
-		Blog.findOne({ _id: id }, (err, doc) => {
+		Blog.findOne({
+			_id: id
+		}, (err, doc) => {
 
 			if (err) {
 				return next(err);
