@@ -2,7 +2,13 @@ const Blog = require('../models/blogModel');
 
 module.exports = {
 	getAllBlogs: (req, res, next) => {
-		Blog.find({}, (err, docs) => {
+
+		let { limit, skip } = req.query;
+
+		limit = !limit ? 100 : parseInt(limit);
+		skip = !skip ? 0 : parseInt(skip);
+
+		Blog.find({}, null, {limit, skip, sort: { created: -1 }}, (err, docs) => {
 			if (err) {
 				return next(err);
 			}
@@ -61,9 +67,12 @@ module.exports = {
 	},
 
 	getBlogById: (req, res, next, id) => {
-		Blog.findOne({
-			_id: id
-		}, (err, doc) => {
+
+		const { slug } = req.query;
+
+		const query = slug ? { slug }: { _id: id };
+
+		Blog.findOne(query, (err, doc) => {
 
 			if (err) {
 				return next(err);
@@ -76,5 +85,6 @@ module.exports = {
 			req.doc = doc;
 			next();
 		})
-	}
+	},
+
 }

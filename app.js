@@ -17,7 +17,7 @@ const { dbUri } = require('./config/mongodb');
 var app = express();
 
 // Connect mongodb
-mongoose.connect(dbUri,  { useNewUrlParser: true });
+mongoose.connect(dbUri,  { useNewUrlParser: true, useCreateIndex: true });
 mongoose.connection
 	.once('open', () => console.log('connected'))
 	.on('error', (error) => console.log(error));
